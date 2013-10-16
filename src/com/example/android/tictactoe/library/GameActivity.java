@@ -186,42 +186,39 @@ public class GameActivity extends Activity {
 
     public boolean checkGameFinished(State player) {
         State[] data = mGameView.getData();
-        boolean full = false;
+        boolean full = true;
 
         //Which column, row, or diag has a winning set.
-        //-1 means no winner. Zero based
-        // Examples:
-        // Row 1 wins
-        // |O|X|_|
-        // |_|X|O|
-        // |_|X|O|
-        //
-        // Row 0 wins
-        // |O|O|O|
-        // |_|X|X|
-        // |_|_|X|
-        //
-        // Col 0 wins
-        // |X|O|O|
-        // |_|X|O|
-        // |O|X|X|
+        //-1 means no winner
         int col = -1;
         int row = -1;
         int diag = -1;
 
-        // Cell indexes:
-        // |O|1|2|
-        // |3|4|5|
-        // |6|7|8|
-
         // check rows
-
+        for (int j = 0, k = 0; j < 3; j++, k += 3) {
+            if (data[k] != State.EMPTY && data[k] == data[k+1] && data[k] == data[k+2]) {
+                row = j;
+            }
+            if (full && (data[k] == State.EMPTY ||
+                         data[k+1] == State.EMPTY ||
+                         data[k+2] == State.EMPTY)) {
+                full = false;
+            }
+        }
 
         // check columns
-
+        for (int i = 0; i < 3; i++) {
+            if (data[i] != State.EMPTY && data[i] == data[i+3] && data[i] == data[i+6]) {
+                col = i;
+            }
+        }
 
         // check diagonals
-
+        if (data[0] != State.EMPTY && data[0] == data[4] && data[0] == data[8]) {
+            diag = 0;
+        } else  if (data[2] != State.EMPTY && data[2] == data[4] && data[2] == data[6]) {
+            diag = 1;
+        }
 
         if (col != -1 || row != -1 || diag != -1) {
             setFinished(player, col, row, diag);
